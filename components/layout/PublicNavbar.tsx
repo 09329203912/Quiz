@@ -13,6 +13,7 @@ export function PublicNavbar() {
         </Link>
         <nav className="hidden items-center gap-8 font-display text-sm text-ink/80 sm:flex">
           <a href="#features" className="hover:text-ink">Features</a>
+          <a href="#leaderboard" className="hover:text-ink">Leaderboard</a>
           <a href="#categories" className="hover:text-ink">Categories</a>
         </nav>
         <div className="flex items-center gap-2">

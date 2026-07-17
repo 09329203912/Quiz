@@ -44,3 +44,11 @@ export interface DifficultyBreakdown {
   attempts: number;
   averageScore: number;
 }
+
+export interface RankedUser extends AdminUser {
+  rank: number;
+}
+
+export interface RankedUser extends AdminUser {
+  rank: number;
+}

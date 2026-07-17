@@ -1,4 +1,4 @@
-import { AdminUser, CategoryStats, SystemStats, WeeklyActivityPoint, DifficultyBreakdown } from "@/types/admin";
+import { AdminUser, CategoryStats, SystemStats, WeeklyActivityPoint, DifficultyBreakdown, RankedUser } from "@/types/admin";
 import { CategoryId } from "@/types/quiz";
 
 export const adminUsers: AdminUser[] = [
@@ -78,6 +78,11 @@ export const categoryStats: CategoryStats[] = (Object.keys(attemptsByCategory) a
 export function getAdminUserById(id: string): AdminUser | undefined {
   return adminUsers.find((u) => u.id === id);
 }
+
+export const fullLeaderboard: RankedUser[] = [...adminUsers]
+  .filter((u) => u.role === "user")
+  .sort((a, b) => b.totalScore - a.totalScore)
+  .map((u, i) => ({ ...u, rank: i + 1 }));
 
 const sampleCategoryCycle: CategoryId[] = [
   "javascript",

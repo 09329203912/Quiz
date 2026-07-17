@@ -1,20 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
+import { Pagination } from "@/components/ui/Pagination";
 import { adminUsers as initialUsers } from "@/data/mock-admin";
 import { AdminUser, UserStatus } from "@/types/admin";
 import { formatDate } from "@/lib/format";
 
 type StatusFilter = "all" | UserStatus;
+const PAGE_SIZE = 8;
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<AdminUser[]>(initialUsers);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filtered = useMemo(() => {
     return users.filter((u) => {
@@ -27,6 +29,17 @@ export default function AdminUsersPage() {
       return matchesQuery && matchesStatus;
     });
   }, [users, query, statusFilter]);
+
+  // Jump back to page 1 whenever the search or status filter changes,
+  // so pagination never gets stuck past the end of a smaller result set.
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query, statusFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+  const pageStart = (safePage - 1) * PAGE_SIZE;
+  const pageUsers = filtered.slice(pageStart, pageStart + PAGE_SIZE);
 
   function toggleStatus(id: string) {
     setUsers((prev) =>
@@ -87,7 +100,7 @@ export default function AdminUsersPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((user) => (
+              {pageUsers.map((user) => (
                 <tr key={user.id} className="border-b border-line last:border-b-0">
                   <td className="px-5 py-4">
                     <Link href={`/admin/users/${user.id}`} className="block hover:opacity-70">
@@ -115,7 +128,7 @@ export default function AdminUsersPage() {
                   </td>
                 </tr>
               ))}
-              {filtered.length === 0 ? (
+              {pageUsers.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-5 py-10 text-center text-sm text-slate">
                     No users match "{query}".
@@ -124,6 +137,10 @@ export default function AdminUsersPage() {
               ) : null}
             </tbody>
           </table>
+        </div>
+
+        <div className="px-5 py-4">
+          <Pagination currentPage={safePage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </div>
       </Card>
 

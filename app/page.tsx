@@ -2,6 +2,7 @@ import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { categories } from "@/data/categories";
+import { LandingLeaderboard } from "@/components/shared/LandingLeaderboard";
 
 const features = [
   {
@@ -87,6 +88,23 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Leaderboard */}
+      <section id="leaderboard" className="mx-auto max-w-6xl px-6 py-20">
+        <div className="flex items-end justify-between">
+          <div>
+            <h2 className="font-display text-2xl font-semibold text-ink sm:text-3xl">See who's leading the board</h2>
+            <p className="mt-2 max-w-md text-sm text-slate">
+              Ranked by total score across every completed quiz. Create an account to add your name to it.
+            </p>
+          </div>
+          <Button href="/register" variant="ghost" size="sm" className="hidden sm:inline-flex">
+            Join the board &rarr;
+          </Button>
+        </div>
+        <div className="mt-8">
+          <LandingLeaderboard />
+        </div>
+      </section>
       {/* Categories preview */}
       <section id="categories" className="mx-auto max-w-6xl px-6 py-20">
         <div className="flex items-end justify-between">

@@ -1,13 +1,20 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { adminUsers } from "@/data/mock-admin";
-import Link from "next/link";
+import { Pagination } from "@/components/ui/Pagination";
+import { fullLeaderboard } from "@/data/mock-admin";
+
+const PAGE_SIZE = 8;
 
 export default function AdminLeaderboardPage() {
-  const ranked = [...adminUsers]
-    .filter((u) => u.role === "user")
-    .sort((a, b) => b.totalScore - a.totalScore)
-    .map((u, i) => ({ ...u, rank: i + 1 }));
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(fullLeaderboard.length / PAGE_SIZE);
+
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageEntries = fullLeaderboard.slice(start, start + PAGE_SIZE);
 
   return (
     <div className="space-y-6">
@@ -31,7 +38,7 @@ export default function AdminLeaderboardPage() {
               </tr>
             </thead>
             <tbody>
-              {ranked.map((entry) => (
+              {pageEntries.map((entry) => (
                 <tr key={entry.id} className="border-b border-line last:border-b-0">
                   <td className="px-5 py-4">
                     <span
@@ -58,6 +65,10 @@ export default function AdminLeaderboardPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="px-5 py-4">
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </div>
       </Card>
     </div>
